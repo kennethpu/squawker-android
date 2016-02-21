@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.codepath.apps.squawker.Fragments.TimelineFragment;
 import com.codepath.apps.squawker.Models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -34,6 +35,7 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
 
     private SquawkerClient client;
+    private TimelineFragment mFragment;
 
     static class ViewHolder {
         @Bind(R.id.ivProfileImage)
@@ -71,12 +73,13 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
         }
     }
 
-    public TweetsArrayAdapter(Context context, List<Tweet> tweets) {
+    public TweetsArrayAdapter(Context context, List<Tweet> tweets, TimelineFragment fragment) {
         super(context, android.R.layout.simple_list_item_1, tweets);
         client = SquawkerApplication.getRestClient();
+        mFragment = fragment;
     }
 
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         final ViewHolder viewHolder;
         if (convertView != null) {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -95,7 +98,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
         viewHolder.tvTimeStamp.setText(getRelativeTimeAgo(tweet.getCreatedAt()));
         viewHolder.tvBody.setText(tweet.getBody());
 
-        // Configure reply button
+        // Configure reply button click action
 
 
         // Configure retweet section UI
@@ -112,6 +115,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                             Tweet newTweet = Tweet.fromJSON(response);
                             configureViewHolderRetweetsForTweet(viewHolder, newTweet);
+                            mFragment.updateTweet(newTweet, position);
                         }
 
                         @Override
@@ -138,6 +142,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                             Tweet newTweet = Tweet.fromJSON(response);
                             configureViewHolderLikesForTweet(viewHolder, newTweet);
+                            mFragment.updateTweet(newTweet, position);
                         }
 
                         @Override
@@ -152,6 +157,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                             Tweet newTweet = Tweet.fromJSON(response);
                             configureViewHolderLikesForTweet(viewHolder, newTweet);
+                            mFragment.updateTweet(newTweet, position);
                         }
 
                         @Override

@@ -17,7 +17,7 @@ import com.codepath.apps.squawker.TimelineFragmentPagerAdapter;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     @Bind(R.id.viewpager)
     ViewPager viewPager;
@@ -49,8 +49,12 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void onComposeAction(MenuItem menuItem) {
+        composeTweet("");
+    }
+
+    public void composeTweet(String preText) {
         FragmentManager fm = getSupportFragmentManager();
-        ComposeFragment composeTweetDialog = ComposeFragment.newInstance();
+        ComposeFragment composeTweetDialog = ComposeFragment.newInstance(preText);
         composeTweetDialog.show(fm, "fragment_compose_tweet");
     }
 

@@ -1,14 +1,17 @@
 package com.codepath.apps.squawker.Fragments;
 
-import android.support.v4.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.codepath.apps.squawker.Activities.TweetDetailActivity;
 import com.codepath.apps.squawker.EndlessScrollListener;
 import com.codepath.apps.squawker.Models.Tweet;
 import com.codepath.apps.squawker.R;
@@ -22,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -31,6 +35,8 @@ import butterknife.ButterKnife;
  */
 public class TimelineFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
+    private final static String ARG_TWEET = "ARG_TWEET";
+    private final static String ARG_POSITION = "ARG_POSITION";
 
     private int mPage;
 
@@ -42,6 +48,7 @@ public class TimelineFragment extends Fragment {
 
     private SquawkerClient client;
     private TweetsArrayAdapter tweetsArrayAdapter;
+    private List<Tweet> tweets;
 
     private long maxId;
 
@@ -67,7 +74,8 @@ public class TimelineFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         // Create adapter and link it to the list view
-        tweetsArrayAdapter = new TweetsArrayAdapter(getActivity().getApplicationContext(), new ArrayList<Tweet>());
+        tweets = new ArrayList<Tweet>();
+        tweetsArrayAdapter = new TweetsArrayAdapter(getActivity().getApplicationContext(), tweets, TimelineFragment.this);
         lvTweets.setAdapter(tweetsArrayAdapter);
 
         // Set up pull-to-refresh
@@ -84,6 +92,17 @@ public class TimelineFragment extends Fragment {
             @Override
             public void onLoadMore(int totalItemsCount) {
 //                populateTimeline();
+            }
+        });
+
+        lvTweets.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("DEBUG", "tet");
+                Intent i = new Intent(getContext(), TweetDetailActivity.class);
+                i.putExtra(ARG_TWEET, tweetsArrayAdapter.getItem(position));
+                i.putExtra(ARG_POSITION, position);
+                getActivity().startActivity(i);
             }
         });
 
@@ -104,6 +123,11 @@ public class TimelineFragment extends Fragment {
             default:
                 break;
         }
+    }
+
+    public void updateTweet(Tweet tweet, int position) {
+        tweets.set(position, tweet);
+        tweetsArrayAdapter.notifyDataSetChanged();
     }
 
     private void refreshTimeline() {

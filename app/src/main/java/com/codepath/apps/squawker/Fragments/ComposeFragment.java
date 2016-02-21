@@ -40,6 +40,8 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
  */
 public class ComposeFragment extends DialogFragment{
 
+    private static final String ARG_PRETEXT = "ARG_PRETEXT";
+
     @Bind(R.id.ivAuthorImage)
     ImageView ivAuthorImage;
 
@@ -67,8 +69,12 @@ public class ComposeFragment extends DialogFragment{
         // Empty constructor is required for DialogFragment
     }
 
-    public static ComposeFragment newInstance() {
+    public static ComposeFragment newInstance(String preText) {
         ComposeFragment frag = new ComposeFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PRETEXT, preText);
+        frag.setArguments(args);
+
         return frag;
     }
 
@@ -129,6 +135,9 @@ public class ComposeFragment extends DialogFragment{
                 // TODO Auto-generated method stub
             }
         });
+
+        String preText = getArguments().getString(ARG_PRETEXT, "");
+        etBody.setText(preText);
 
         // Show soft keyboard automatically and request focus to field
         etBody.requestFocus();
