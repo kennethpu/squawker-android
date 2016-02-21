@@ -1,6 +1,7 @@
 package com.codepath.apps.squawker;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ListView;
@@ -19,11 +20,16 @@ import butterknife.ButterKnife;
 
 public class TimelineActivity extends AppCompatActivity {
 
+    @Bind(R.id.lvTweets)
+    ListView lvTweets;
+
+    @Bind(R.id.swipeContainer)
+    SwipeRefreshLayout swipeContainer;
+
     private SquawkerClient client;
     private TweetsArrayAdapter tweetsArrayAdapter;
 
-    @Bind(R.id.lvTweets)
-    ListView lvTweets;
+    private long maxId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,25 +37,47 @@ public class TimelineActivity extends AppCompatActivity {
         setContentView(R.layout.activity_timeline);
         ButterKnife.bind(this);
 
+        // Set up pull-to-refresh
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                maxId = 0;
+                tweetsArrayAdapter.clear();
+                populateTimeline();
+            }
+        });
+
         tweetsArrayAdapter = new TweetsArrayAdapter(this, new ArrayList<Tweet>());
         lvTweets.setAdapter(tweetsArrayAdapter);
+        lvTweets.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                populateTimeline();
+            }
+        });
 
         client = SquawkerApplication.getRestClient();
+
+        maxId = 0;
         populateTimeline();
     }
 
     private void populateTimeline() {
-        client.getHomeTimeline(new JsonHttpResponseHandler() {
+        client.getHomeTimeline(maxId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 ArrayList<Tweet> tweets = Tweet.fromJSONArray(response);
-                Log.d("DEBUG", tweets.toString());
                 tweetsArrayAdapter.addAll(tweets);
+                maxId = tweets.get(19).getuId();
+
+                swipeContainer.setRefreshing(false);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 Log.d("DEBUG", errorResponse.toString());
+
+                swipeContainer.setRefreshing(false);
             }
         });
     }
