@@ -96,7 +96,17 @@ public class TimelineFragment extends Fragment {
         return view;
     }
 
-    public void refreshTimeline() {
+    public void insertTweet(Tweet tweet) {
+        switch (mPage) {
+            case 1:
+                tweetsArrayAdapter.insert(tweet, 0);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void refreshTimeline() {
         maxId = 0;
         populateTimeline();
     }

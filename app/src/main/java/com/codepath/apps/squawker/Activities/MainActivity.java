@@ -9,6 +9,8 @@ import android.view.MenuItem;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.codepath.apps.squawker.Fragments.ComposeFragment;
+import com.codepath.apps.squawker.Fragments.TimelineFragment;
+import com.codepath.apps.squawker.Models.Tweet;
 import com.codepath.apps.squawker.Models.User;
 import com.codepath.apps.squawker.R;
 import com.codepath.apps.squawker.TimelineFragmentPagerAdapter;
@@ -55,5 +57,13 @@ public class MainActivity extends AppCompatActivity{
         FragmentManager fm = getSupportFragmentManager();
         ComposeFragment composeTweetDialog = ComposeFragment.newInstance(currentUser.getProfileImageUrl());
         composeTweetDialog.show(fm, "fragment_compose_tweet");
+    }
+
+    public void insertTweet(Tweet tweet) {
+        int currentItem = viewPager.getCurrentItem();
+        if (currentItem == 0) {
+            TimelineFragment timelineFragment = (TimelineFragment) timelineAdapter.getItem(viewPager.getCurrentItem());
+            timelineFragment.insertTweet(tweet);
+        }
     }
 }
