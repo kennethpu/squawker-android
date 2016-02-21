@@ -24,7 +24,7 @@ public class SquawkerClient extends OAuthBaseClient {
         String apiUrl = getApiUrl("statuses/home_timeline.json");
         RequestParams params = new RequestParams();
         if (maxId != 0) {
-            params.put("max_id", maxId);
+            params.put("max_id", maxId-1);
         }
         getClient().get(apiUrl, params, handler);
     }

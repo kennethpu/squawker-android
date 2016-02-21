@@ -1,9 +1,12 @@
 package com.codepath.apps.squawker;
 
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.codepath.apps.squawker.models.Tweet;
@@ -18,7 +21,13 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class TimelineActivity extends AppCompatActivity {
+/**
+ * Created by kpu on 2/20/16.
+ */
+public class HomeFragment extends Fragment {
+    public static final String ARG_PAGE = "ARG_PAGE";
+
+    private int mPage;
 
     @Bind(R.id.lvTweets)
     ListView lvTweets;
@@ -31,11 +40,30 @@ public class TimelineActivity extends AppCompatActivity {
 
     private long maxId;
 
+    public static HomeFragment newInstance(int page) {
+        Bundle args = new Bundle();
+        args.putInt(ARG_PAGE, page);
+        HomeFragment fragment = new HomeFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_timeline);
-        ButterKnife.bind(this);
+        mPage = getArguments().getInt(ARG_PAGE);
+    }
+
+    // Inflate the fragment layout we defined above for this fragment
+    // Set the associated text for the title
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        ButterKnife.bind(this, view);
+
+        // Create adapter and link it to the list view
+        tweetsArrayAdapter = new TweetsArrayAdapter(getActivity().getApplicationContext(), new ArrayList<Tweet>());
+        lvTweets.setAdapter(tweetsArrayAdapter);
 
         // Set up pull-to-refresh
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -47,14 +75,10 @@ public class TimelineActivity extends AppCompatActivity {
             }
         });
 
-        // Create adapter and link it to the list view
-        tweetsArrayAdapter = new TweetsArrayAdapter(this, new ArrayList<Tweet>());
-        lvTweets.setAdapter(tweetsArrayAdapter);
-
         // Set up infinite scrolling
         lvTweets.setOnScrollListener(new EndlessScrollListener() {
             @Override
-            public void onLoadMore(int page, int totalItemsCount) {
+            public void onLoadMore(int totalItemsCount) {
 //                populateTimeline();
             }
         });
@@ -65,6 +89,8 @@ public class TimelineActivity extends AppCompatActivity {
         // Refresh UI
         maxId = 0;
         populateTimeline();
+
+        return view;
     }
 
     private void populateTimeline() {
