@@ -1,11 +1,13 @@
 package com.codepath.apps.squawker;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -42,6 +44,21 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
         @Bind(R.id.tvBody)
         TextView tvBody;
 
+        @Bind(R.id.ibReply)
+        ImageButton ibReply;
+
+        @Bind(R.id.ibRetweet)
+        ImageButton ibRetweet;
+
+        @Bind(R.id.tvRetweetCount)
+        TextView tvRetweetCount;
+
+        @Bind(R.id.ibLike)
+        ImageButton ibLike;
+
+        @Bind(R.id.tvLikeCount)
+        TextView tvLikeCount;
+
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);
         }
@@ -52,7 +69,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
+        final ViewHolder viewHolder;
         if (convertView != null) {
             viewHolder = (ViewHolder) convertView.getTag();
         } else {
@@ -69,6 +86,51 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
         viewHolder.tvScreenName.setText("@" + tweet.getUser().getScreenName());
         viewHolder.tvTimeStamp.setText(getRelativeTimeAgo(tweet.getCreatedAt()));
         viewHolder.tvBody.setText(tweet.getBody());
+
+        // Configure reply button
+
+
+        // Configure retweet button
+        viewHolder.ibRetweet.setSelected(tweet.isRetweeted());
+        viewHolder.ibRetweet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isSelected = viewHolder.ibRetweet.isSelected();
+                viewHolder.ibRetweet.setSelected(!isSelected);
+
+                int textColor = isSelected ? R.color.icon_default : R.color.retweet_green;
+                viewHolder.tvRetweetCount.setTextColor(ContextCompat.getColor(getContext(), textColor));
+            }
+        });
+
+        // Configure retweet count text
+        int retweetCount = tweet.getRetweetCount();
+        viewHolder.tvRetweetCount.setText(String.valueOf(retweetCount));
+        int retweetTextColor = tweet.isRetweeted() ? R.color.retweet_green : R.color.icon_default;
+        viewHolder.tvRetweetCount.setTextColor(ContextCompat.getColor(getContext(), retweetTextColor));
+        int retweetTextVisibility = retweetCount > 0 ? View.VISIBLE : View.INVISIBLE;
+        viewHolder.tvRetweetCount.setVisibility(retweetTextVisibility);
+
+        // Configure like button
+        viewHolder.ibLike.setSelected(tweet.isFavorited());
+        viewHolder.ibLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isSelected = viewHolder.ibLike.isSelected();
+                viewHolder.ibLike.setSelected(!isSelected);
+
+                int textColor = isSelected ? R.color.icon_default : R.color.like_red;
+                viewHolder.tvLikeCount.setTextColor(ContextCompat.getColor(getContext(), textColor));
+            }
+        });
+
+        // Configure like count text
+        int likeCount = tweet.getFavoriteCount();
+        viewHolder.tvLikeCount.setText(String.valueOf(likeCount));
+        int likeTextColor = tweet.isFavorited() ? R.color.like_red : R.color.icon_default;
+        viewHolder.tvLikeCount.setTextColor(ContextCompat.getColor(getContext(), likeTextColor));
+        int likeTextVisibility = likeCount > 0 ? View.VISIBLE : View.INVISIBLE;
+        viewHolder.tvLikeCount.setVisibility(likeTextVisibility);
 
         return convertView;
     }
