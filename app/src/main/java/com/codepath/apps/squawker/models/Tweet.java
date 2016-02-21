@@ -80,8 +80,16 @@ public class Tweet implements Parcelable {
         return retweeted;
     }
 
+    public void setRetweeted(boolean retweeted) {
+        this.retweeted = retweeted;
+    }
+
     public int getRetweetCount() {
         return retweetCount;
+    }
+
+    public void setRetweetCount(int retweetCount) {
+        this.retweetCount = retweetCount;
     }
 
     public boolean isFavorited() {

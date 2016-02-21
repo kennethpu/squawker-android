@@ -113,8 +113,10 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
                     client.retweetTweet(tweet.getuId(), new JsonHttpResponseHandler() {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                            Tweet newTweet = Tweet.fromJSON(response);
-                            configureViewHolderRetweetsForTweet(viewHolder, newTweet);
+                            Tweet newTweet = tweet;
+                            newTweet.setRetweeted(true);
+                            newTweet.setRetweetCount(tweet.getRetweetCount() + 1);
+                            configureViewHolderLikesForTweet(viewHolder, newTweet);
                             mFragment.updateTweet(newTweet, position);
                         }
 
