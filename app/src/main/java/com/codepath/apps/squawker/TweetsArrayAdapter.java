@@ -208,7 +208,12 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
 
     private void configureViewHolderRetweetsForTweet(ViewHolder viewHolder, Tweet tweet) {
         // Configure retweet button
-        viewHolder.ibRetweet.setSelected(tweet.isRetweeted());
+        UserStorage userStorage = new UserStorage(getContext());
+        if (userStorage.getUserId() == tweet.getUser().getuId()) {
+            viewHolder.ibRetweet.setEnabled(false);
+        } else {
+            viewHolder.ibRetweet.setSelected(tweet.isRetweeted());
+        }
 
         // Configure retweet count text
         int retweetCount = tweet.getRetweetCount();

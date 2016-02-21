@@ -15,6 +15,7 @@ import com.codepath.apps.squawker.Models.Tweet;
 import com.codepath.apps.squawker.R;
 import com.codepath.apps.squawker.SquawkerApplication;
 import com.codepath.apps.squawker.SquawkerClient;
+import com.codepath.apps.squawker.UserStorage;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -31,6 +32,7 @@ public class TweetDetailActivity extends AppCompatActivity {
     private final static String ARG_TWEET = "ARG_TWEET";
     private final static String ARG_POSITION = "ARG_POSITION";
     private int mPosition;
+    private Tweet mTweet;
 
     private SquawkerClient client;
 
@@ -106,6 +108,7 @@ public class TweetDetailActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                             Tweet newTweet = Tweet.fromJSON(response);
+                            mTweet = newTweet;
                             configureRetweetsForTweet(newTweet);
                         }
 
@@ -132,6 +135,7 @@ public class TweetDetailActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                             Tweet newTweet = Tweet.fromJSON(response);
+                            mTweet = newTweet;
                             configureLikesForTweet(newTweet);
                         }
 
@@ -146,6 +150,7 @@ public class TweetDetailActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                             Tweet newTweet = Tweet.fromJSON(response);
+                            mTweet = newTweet;
                             configureLikesForTweet(newTweet);
                         }
 
@@ -178,7 +183,12 @@ public class TweetDetailActivity extends AppCompatActivity {
 
     private void configureRetweetsForTweet(Tweet tweet) {
         // Configure retweet button
-        ibDetailRetweet.setSelected(tweet.isRetweeted());
+        UserStorage userStorage = new UserStorage(getApplicationContext());
+        if (userStorage.getUserId() == tweet.getUser().getuId()) {
+            ibDetailRetweet.setEnabled(false);
+        } else {
+            ibDetailRetweet.setSelected(tweet.isRetweeted());
+        }
 
         // Configure retweet count text
         int retweetCount = tweet.getRetweetCount();
