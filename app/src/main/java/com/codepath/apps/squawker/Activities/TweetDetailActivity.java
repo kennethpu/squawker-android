@@ -187,6 +187,7 @@ public class TweetDetailActivity extends AppCompatActivity {
         if (userStorage.getUserId() == tweet.getUser().getuId()) {
             ibDetailRetweet.setEnabled(false);
         } else {
+            ibDetailRetweet.setEnabled(true);
             ibDetailRetweet.setSelected(tweet.isRetweeted());
         }
 

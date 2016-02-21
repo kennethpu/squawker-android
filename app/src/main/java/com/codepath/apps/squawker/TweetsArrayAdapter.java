@@ -212,6 +212,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
         if (userStorage.getUserId() == tweet.getUser().getuId()) {
             viewHolder.ibRetweet.setEnabled(false);
         } else {
+            viewHolder.ibRetweet.setEnabled(true);
             viewHolder.ibRetweet.setSelected(tweet.isRetweeted());
         }
 
