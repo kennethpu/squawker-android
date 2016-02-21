@@ -91,7 +91,7 @@ public class TimelineFragment extends Fragment {
         lvTweets.setOnScrollListener(new EndlessScrollListener() {
             @Override
             public void onLoadMore(int totalItemsCount) {
-//                populateTimeline();
+                populateTimeline();
             }
         });
 
