@@ -1,6 +1,7 @@
 package com.codepath.apps.squawker;
 
 import android.content.Context;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,10 @@ import android.widget.TextView;
 import com.codepath.apps.squawker.models.Tweet;
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -31,6 +35,9 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
 
         @Bind(R.id.tvScreenName)
         TextView tvScreenName;
+
+        @Bind(R.id.tvTimeStamp)
+        TextView tvTimeStamp;
 
         @Bind(R.id.tvBody)
         TextView tvBody;
@@ -60,8 +67,27 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
         Picasso.with(getContext()).load(tweet.getUser().getProfileImageUrl()).transform(new RoundedCornersTransformation(5, 1)).into(viewHolder.ivProfileImage);
         viewHolder.tvFullName.setText(tweet.getUser().getFullName());
         viewHolder.tvScreenName.setText("@" + tweet.getUser().getScreenName());
+        viewHolder.tvTimeStamp.setText(" · " + getRelativeTimeAgo(tweet.getCreatedAt()));
         viewHolder.tvBody.setText(tweet.getBody());
 
         return convertView;
+    }
+
+    private String getRelativeTimeAgo(String rawJsonDate) {
+        String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
+        SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
+        sf.setLenient(true);
+
+        String relativeDate = "";
+        try {
+            long dateMillis = sf.parse(rawJsonDate).getTime();
+            String relativeDateString = DateUtils.getRelativeTimeSpanString(dateMillis, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
+            String[] stringComponents = relativeDateString.split(" ");
+            relativeDate = stringComponents[0] + stringComponents[1].charAt(0);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return relativeDate;
     }
 }

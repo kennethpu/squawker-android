@@ -15,7 +15,6 @@ public class LoginActivity extends OAuthLoginActionBarActivity<SquawkerClient> {
 		setContentView(R.layout.activity_login);
 	}
 
-
 	// Inflate the menu; this adds items to the action bar if it is present.
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

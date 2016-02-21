@@ -41,6 +41,16 @@
         android:textColor="@color/blue_bayoux" />
 
     <TextView
+        android:id="@+id/tvTimeStamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tvFullName"
+        android:layout_toEndOf="@+id/tvScreenName"
+        android:layout_toRightOf="@+id/tvScreenName"
+        android:text="@string/placeholder_time_stamp"
+        android:textColor="@color/blue_bayoux" />
+
+    <TextView
         android:id="@+id/tvBody"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
