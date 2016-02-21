@@ -2,7 +2,6 @@ package com.codepath.apps.squawker;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 /**
  * Created by kpu on 2/21/16.
@@ -20,14 +19,12 @@ public class UserStorage {
     }
 
     public void saveUserData(long userId, String fullName, String screenName, String imageUrl) {
-        Log.d("DEBUG", fullName.toString());
         SharedPreferences.Editor prefsEditor = prefs.edit();
         prefsEditor.putLong(KEY_ID, userId);
         prefsEditor.putString(KEY_FULL_NAME, fullName);
         prefsEditor.putString(KEY_SCREEN_NAME, screenName);
         prefsEditor.putString(KEY_IMAGE_URL, imageUrl);
         prefsEditor.commit();
-        Log.d("DEBUG", getFullName().toString());
     }
 
     public long getUserId() {

@@ -3,6 +3,7 @@ package com.codepath.apps.squawker;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.squawker.Models.Tweet;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.apache.http.Header;
+import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -27,6 +32,8 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
  * Created by kpu on 2/20/16.
  */
 public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
+
+    private SquawkerClient client;
 
     static class ViewHolder {
         @Bind(R.id.ivProfileImage)
@@ -66,6 +73,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
 
     public TweetsArrayAdapter(Context context, List<Tweet> tweets) {
         super(context, android.R.layout.simple_list_item_1, tweets);
+        client = SquawkerApplication.getRestClient();
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -78,7 +86,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
             convertView.setTag(viewHolder);
         }
 
-        Tweet tweet = getItem(position);
+        final Tweet tweet = getItem(position);
 
         viewHolder.ivProfileImage.setImageResource(0);
         Glide.with(getContext()).load(tweet.getUser().getProfileImageUrl()).bitmapTransform(new RoundedCornersTransformation(getContext(), 5, 1)).into(viewHolder.ivProfileImage);
@@ -90,47 +98,71 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
         // Configure reply button
 
 
-        // Configure retweet button
-        viewHolder.ibRetweet.setSelected(tweet.isRetweeted());
+        // Configure retweet section UI
+        configureViewHolderRetweetsForTweet(viewHolder, tweet);
+
+        // Configure retweet button click action
         viewHolder.ibRetweet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 boolean isSelected = viewHolder.ibRetweet.isSelected();
-                viewHolder.ibRetweet.setSelected(!isSelected);
+                if (!isSelected) {
+                    client.retweetTweet(tweet.getuId(), new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            Tweet newTweet = Tweet.fromJSON(response);
+                            configureViewHolderRetweetsForTweet(viewHolder, newTweet);
+                        }
 
-                int textColor = isSelected ? R.color.icon_default : R.color.retweet_green;
-                viewHolder.tvRetweetCount.setTextColor(ContextCompat.getColor(getContext(), textColor));
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                            Log.d("DEBUG", errorResponse.toString());
+                            super.onFailure(statusCode, headers, throwable, errorResponse);
+                        }
+                    });
+                }
             }
         });
 
-        // Configure retweet count text
-        int retweetCount = tweet.getRetweetCount();
-        viewHolder.tvRetweetCount.setText(String.valueOf(retweetCount));
-        int retweetTextColor = tweet.isRetweeted() ? R.color.retweet_green : R.color.icon_default;
-        viewHolder.tvRetweetCount.setTextColor(ContextCompat.getColor(getContext(), retweetTextColor));
-        int retweetTextVisibility = retweetCount > 0 ? View.VISIBLE : View.INVISIBLE;
-        viewHolder.tvRetweetCount.setVisibility(retweetTextVisibility);
+        // Configure like section UI
+        configureViewHolderLikesForTweet(viewHolder, tweet);
 
-        // Configure like button
-        viewHolder.ibLike.setSelected(tweet.isFavorited());
+        // Configure like button click action
         viewHolder.ibLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 boolean isSelected = viewHolder.ibLike.isSelected();
-                viewHolder.ibLike.setSelected(!isSelected);
+                if (isSelected) {
+                    client.unFavoriteTweet(tweet.getuId(), new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            Tweet newTweet = Tweet.fromJSON(response);
+                            configureViewHolderLikesForTweet(viewHolder, newTweet);
+                        }
 
-                int textColor = isSelected ? R.color.icon_default : R.color.like_red;
-                viewHolder.tvLikeCount.setTextColor(ContextCompat.getColor(getContext(), textColor));
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                            Log.d("DEBUG", errorResponse.toString());
+                            super.onFailure(statusCode, headers, throwable, errorResponse);
+                        }
+                    });
+                } else {
+                    client.favoriteTweet(tweet.getuId(), new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            Tweet newTweet = Tweet.fromJSON(response);
+                            configureViewHolderLikesForTweet(viewHolder, newTweet);
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                            Log.d("DEBUG", errorResponse.toString());
+                            super.onFailure(statusCode, headers, throwable, errorResponse);
+                        }
+                    });
+                }
             }
         });
-
-        // Configure like count text
-        int likeCount = tweet.getFavoriteCount();
-        viewHolder.tvLikeCount.setText(String.valueOf(likeCount));
-        int likeTextColor = tweet.isFavorited() ? R.color.like_red : R.color.icon_default;
-        viewHolder.tvLikeCount.setTextColor(ContextCompat.getColor(getContext(), likeTextColor));
-        int likeTextVisibility = likeCount > 0 ? View.VISIBLE : View.INVISIBLE;
-        viewHolder.tvLikeCount.setVisibility(likeTextVisibility);
 
         return convertView;
     }
@@ -151,5 +183,31 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
         }
 
         return relativeDate;
+    }
+
+    private void configureViewHolderLikesForTweet(ViewHolder viewHolder, Tweet tweet) {
+        // Configure like button
+        viewHolder.ibLike.setSelected(tweet.isFavorited());
+
+        // Configure like count text
+        int likeCount = tweet.getFavoriteCount();
+        viewHolder.tvLikeCount.setText(String.valueOf(likeCount));
+        int likeTextColor = tweet.isFavorited() ? R.color.like_red : R.color.icon_default;
+        viewHolder.tvLikeCount.setTextColor(ContextCompat.getColor(getContext(), likeTextColor));
+        int likeTextVisibility = likeCount > 0 ? View.VISIBLE : View.INVISIBLE;
+        viewHolder.tvLikeCount.setVisibility(likeTextVisibility);
+    }
+
+    private void configureViewHolderRetweetsForTweet(ViewHolder viewHolder, Tweet tweet) {
+        // Configure retweet button
+        viewHolder.ibRetweet.setSelected(tweet.isRetweeted());
+
+        // Configure retweet count text
+        int retweetCount = tweet.getRetweetCount();
+        viewHolder.tvRetweetCount.setText(String.valueOf(retweetCount));
+        int retweetTextColor = tweet.isRetweeted() ? R.color.retweet_green : R.color.icon_default;
+        viewHolder.tvRetweetCount.setTextColor(ContextCompat.getColor(getContext(), retweetTextColor));
+        int retweetTextVisibility = retweetCount > 0 ? View.VISIBLE : View.INVISIBLE;
+        viewHolder.tvRetweetCount.setVisibility(retweetTextVisibility);
     }
 }

@@ -38,7 +38,7 @@
         android:layout_toEndOf="@+id/tvFullName"
         android:layout_toRightOf="@+id/tvFullName"
         android:text="@string/placeholder_screen_name"
-        android:textColor="@color/blue_bayoux" />
+        android:textColor="@color/icon_default" />
 
     <TextView
         android:id="@+id/tvTimeStamp"
@@ -48,7 +48,7 @@
         android:layout_alignParentRight="true"
         android:paddingRight="5dp"
         android:text="@string/placeholder_time_stamp"
-        android:textColor="@color/blue_bayoux" />
+        android:textColor="@color/icon_default" />
 
     <TextView
         android:id="@+id/tvBody"

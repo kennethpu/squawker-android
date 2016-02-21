@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -141,7 +142,6 @@ public class ComposeFragment extends DialogFragment{
                 SquawkerApplication.getRestClient().postTweet(etBody.getText().toString(), new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-//                        Log.d("DEBUG", response.toString());
                         Tweet tweet = Tweet.fromJSON(response);
                         ((MainActivity) getActivity()).insertTweet(tweet);
                         getDialog().dismiss();
@@ -149,7 +149,7 @@ public class ComposeFragment extends DialogFragment{
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-//                        Log.d("DEBUG", errorResponse.toString());
+                        Log.d("DEBUG", errorResponse.toString());
                         Toast.makeText(getActivity().getApplicationContext(), "Posting Tweet Failed!", Toast.LENGTH_LONG).show();
                     }
                 });

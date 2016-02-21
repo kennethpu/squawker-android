@@ -44,11 +44,10 @@ public class SquawkerClient extends OAuthBaseClient {
         getClient().get(apiUrl, params, handler);
     }
 
-    public void retweetTweet(long userId, long tweetId, AsyncHttpResponseHandler handler) {
-        String extension = String.format("statuses/retweet/%d.json", userId);
+    public void retweetTweet(long tweetId, AsyncHttpResponseHandler handler) {
+        String extension = String.format("statuses/retweet/%d.json", tweetId);
         String apiUrl = getApiUrl(extension);
         RequestParams params = new RequestParams();
-        params.put("id", tweetId);
         getClient().post(apiUrl, params, handler);
     }
 
