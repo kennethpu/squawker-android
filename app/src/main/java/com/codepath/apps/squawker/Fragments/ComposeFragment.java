@@ -33,7 +33,6 @@ import org.json.JSONObject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
  * Created by kpu on 2/21/16.
@@ -42,8 +41,8 @@ public class ComposeFragment extends DialogFragment{
 
     private static final String ARG_PRETEXT = "ARG_PRETEXT";
 
-    @Bind(R.id.ivAuthorImage)
-    ImageView ivAuthorImage;
+    @Bind(R.id.rivAuthorImage)
+    ImageView rivAuthorImage;
 
     @Bind(R.id.tvAuthorFullName)
     TextView tvAuthorFullName;
@@ -107,9 +106,8 @@ public class ComposeFragment extends DialogFragment{
 
         UserStorage userStorage = new UserStorage(getActivity().getApplicationContext());
         String imageUrl = userStorage.getImageUrl();
-        ivAuthorImage.setImageResource(0);
-
-        Glide.with(getContext()).load(imageUrl).bitmapTransform(new RoundedCornersTransformation(getContext(), 5, 1)).into(ivAuthorImage);
+        rivAuthorImage.setImageResource(0);
+        Glide.with(getContext()).load(imageUrl).into(rivAuthorImage);
 
         String fullName = userStorage.getFullName();
         tvAuthorFullName.setText(fullName);

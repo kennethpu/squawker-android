@@ -21,6 +21,7 @@ public class Tweet implements Parcelable {
     private int retweetCount;
     private boolean favorited;
     private int favoriteCount;
+    private String mediaUrl;
 
     public static Tweet fromJSON(JSONObject jsonObject) {
         Tweet tweet = new Tweet();
@@ -34,6 +35,10 @@ public class Tweet implements Parcelable {
             tweet.retweetCount = jsonObject.getInt("retweet_count");
             tweet.favorited = jsonObject.getBoolean("favorited");
             tweet.favoriteCount = jsonObject.getInt("favorite_count");
+            JSONArray mediaArray = jsonObject.getJSONObject("entities").getJSONArray("media");
+            if (mediaArray.length() > 0) {
+                tweet.mediaUrl = mediaArray.getJSONObject(0).getString("media_url");
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -100,6 +105,10 @@ public class Tweet implements Parcelable {
         return favoriteCount;
     }
 
+    public String getMediaUrl() {
+        return mediaUrl;
+    }
+
     public Tweet() {
     }
 
@@ -118,6 +127,7 @@ public class Tweet implements Parcelable {
         dest.writeInt(this.retweetCount);
         dest.writeByte(favorited ? (byte) 1 : (byte) 0);
         dest.writeInt(this.favoriteCount);
+        dest.writeString(this.mediaUrl);
     }
 
     private Tweet(Parcel in) {
@@ -129,6 +139,7 @@ public class Tweet implements Parcelable {
         this.retweetCount = in.readInt();
         this.favorited = in.readByte() != 0;
         this.favoriteCount = in.readInt();
+        this.mediaUrl = in.readString();
     }
 
     public static final Creator<Tweet> CREATOR = new Creator<Tweet>() {

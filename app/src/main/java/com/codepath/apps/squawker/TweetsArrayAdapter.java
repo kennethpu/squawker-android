@@ -9,13 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.squawker.Fragments.TimelineFragment;
 import com.codepath.apps.squawker.Models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import org.apache.http.Header;
 import org.json.JSONObject;
@@ -27,7 +27,6 @@ import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
  * Created by kpu on 2/20/16.
@@ -38,8 +37,8 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
     private TimelineFragment mFragment;
 
     static class ViewHolder {
-        @Bind(R.id.ivProfileImage)
-        ImageView ivProfileImage;
+        @Bind(R.id.rivProfileImage)
+        RoundedImageView rivProfileImage;
 
         @Bind(R.id.tvFullName)
         TextView tvFullName;
@@ -52,6 +51,9 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
 
         @Bind(R.id.tvBody)
         LinkifiedTextView tvBody;
+
+        @Bind(R.id.rivMedia)
+        RoundedImageView rivMedia;
 
         @Bind(R.id.ibReply)
         ImageButton ibReply;
@@ -91,12 +93,21 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
 
         final Tweet tweet = getItem(position);
 
-        viewHolder.ivProfileImage.setImageResource(0);
-        Glide.with(getContext()).load(tweet.getUser().getProfileImageUrl()).bitmapTransform(new RoundedCornersTransformation(getContext(), 5, 1)).into(viewHolder.ivProfileImage);
+        viewHolder.rivProfileImage.setImageResource(0);
+        Glide.with(getContext()).load(tweet.getUser().getProfileImageUrl()).into(viewHolder.rivProfileImage);
         viewHolder.tvFullName.setText(tweet.getUser().getFullName());
         viewHolder.tvScreenName.setText("@" + tweet.getUser().getScreenName());
         viewHolder.tvTimeStamp.setText(getRelativeTimeAgo(tweet.getCreatedAt()));
         viewHolder.tvBody.setText(tweet.getBody());
+
+        // Configure media image
+        if (tweet.getMediaUrl() != null) {
+            viewHolder.rivMedia.setVisibility(View.VISIBLE);
+            viewHolder.rivMedia.setImageResource(0);
+            Glide.with(getContext()).load(tweet.getMediaUrl()).into(viewHolder.rivMedia);
+        } else {
+            viewHolder.rivMedia.setVisibility(View.GONE);
+        }
 
         // Configure reply button click action
 

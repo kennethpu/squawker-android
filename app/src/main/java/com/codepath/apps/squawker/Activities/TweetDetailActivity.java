@@ -17,6 +17,7 @@ import com.codepath.apps.squawker.SquawkerApplication;
 import com.codepath.apps.squawker.SquawkerClient;
 import com.codepath.apps.squawker.UserStorage;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import org.apache.http.Header;
 import org.json.JSONObject;
@@ -26,7 +27,6 @@ import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class TweetDetailActivity extends AppCompatActivity {
     private final static String ARG_TWEET = "ARG_TWEET";
@@ -36,8 +36,8 @@ public class TweetDetailActivity extends AppCompatActivity {
 
     private SquawkerClient client;
 
-    @Bind(R.id.ivUserImage)
-    ImageView ivUserImage;
+    @Bind(R.id.rivUserImage)
+    ImageView rivUserImage;
 
     @Bind(R.id.tvUserFullName)
     TextView tvUserFullName;
@@ -47,6 +47,9 @@ public class TweetDetailActivity extends AppCompatActivity {
 
     @Bind(R.id.tvDetailBody)
     TextView tvDetailBody;
+
+    @Bind(R.id.rivDetailMedia)
+    RoundedImageView rivDetailMedia;
 
     @Bind(R.id.tvDate)
     TextView tvDate;
@@ -77,12 +80,21 @@ public class TweetDetailActivity extends AppCompatActivity {
         final Tweet tweet = getIntent().getExtras().getParcelable(ARG_TWEET);
         mPosition = getIntent().getIntExtra(ARG_POSITION, 0);
 
-        ivUserImage.setImageResource(0);
-        Glide.with(this).load(tweet.getUser().getProfileImageUrl()).bitmapTransform(new RoundedCornersTransformation(this, 5, 1)).into(ivUserImage);
+        rivUserImage.setImageResource(0);
+        Glide.with(this).load(tweet.getUser().getProfileImageUrl()).into(rivUserImage);
         tvUserFullName.setText(tweet.getUser().getFullName());
         tvUserScreenName.setText("@" + tweet.getUser().getScreenName());
         tvDate.setText(tweet.getCreatedAt());
         tvDetailBody.setText(tweet.getBody());
+
+        // Configure media image
+        if (tweet.getMediaUrl() != null) {
+            rivDetailMedia.setVisibility(View.VISIBLE);
+            rivDetailMedia.setImageResource(0);
+            Glide.with(this).load(tweet.getMediaUrl()).into(rivDetailMedia);
+        } else {
+            rivDetailMedia.setVisibility(View.GONE);
+        }
 
         // Configure reply button click action
         ibDetailReply.setOnClickListener(new View.OnClickListener() {
