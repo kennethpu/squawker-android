@@ -3,4 +3,7 @@
     <string name="app_name">Squawker</string>
     <string name="login_label">Login With Twitter</string>
     <string name="title_activity_timeline">Home Timeline</string>
+    <string name="placeholder_full_name">Full Name</string>
+    <string name="placeholder_screen_name">\@username</string>
+    <string name="placeholder_body">Lorem ipsum dolorum</string>
 </resources>
