@@ -46,7 +46,8 @@
         android:lines="4"
         android:maxLength="140"
         android:textColor="@color/bunker"
-        android:textColorHint="@color/mischka" />
+        android:textColorHint="@color/mischka"
+        android:textSize="16sp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
