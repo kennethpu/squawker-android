@@ -140,6 +140,8 @@ public class TimelineFragment extends Fragment {
 
     private void handleTimelineFetch(ArrayList<Tweet> tweets) {
         tweetsArrayAdapter.addAll(tweets);
-        maxId = tweets.get(tweets.size() - 1).getuId();
+        if (tweets.size() > 0) {
+            maxId = tweets.get(tweets.size() - 1).getuId();
+        }
     }
 }
