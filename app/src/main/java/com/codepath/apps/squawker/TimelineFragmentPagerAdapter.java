@@ -22,7 +22,7 @@ public class TimelineFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return HomeFragment.newInstance(position + 1);
+        return TimelineFragment.newInstance(position + 1);
     }
 
     @Override

@@ -24,7 +24,7 @@ import butterknife.ButterKnife;
 /**
  * Created by kpu on 2/20/16.
  */
-public class HomeFragment extends Fragment {
+public class TimelineFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
 
     private int mPage;
@@ -40,10 +40,10 @@ public class HomeFragment extends Fragment {
 
     private long maxId;
 
-    public static HomeFragment newInstance(int page) {
+    public static TimelineFragment newInstance(int page) {
         Bundle args = new Bundle();
         args.putInt(ARG_PAGE, page);
-        HomeFragment fragment = new HomeFragment();
+        TimelineFragment fragment = new TimelineFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,7 +58,7 @@ public class HomeFragment extends Fragment {
     // Set the associated text for the title
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_timeline, container, false);
         ButterKnife.bind(this, view);
 
         // Create adapter and link it to the list view
@@ -94,22 +94,52 @@ public class HomeFragment extends Fragment {
     }
 
     private void populateTimeline() {
+        switch (mPage) {
+            case 1:
+                fetchHomeTimeline();
+                break;
+            case 2:
+                fetchMentionsTimeline();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void fetchHomeTimeline() {
         client.getHomeTimeline(maxId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                ArrayList<Tweet> tweets = Tweet.fromJSONArray(response);
-                tweetsArrayAdapter.addAll(tweets);
-                maxId = tweets.get(tweets.size()-1).getuId();
-
+                handleTimelineFetch(Tweet.fromJSONArray(response));
                 swipeContainer.setRefreshing(false);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 Log.d("DEBUG", errorResponse.toString());
-
                 swipeContainer.setRefreshing(false);
             }
         });
+    }
+
+    private void fetchMentionsTimeline() {
+        client.getMentionsTimeline(maxId, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                handleTimelineFetch(Tweet.fromJSONArray(response));
+                swipeContainer.setRefreshing(false);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.d("DEBUG", errorResponse.toString());
+                swipeContainer.setRefreshing(false);
+            }
+        });
+    }
+
+    private void handleTimelineFetch(ArrayList<Tweet> tweets) {
+        tweetsArrayAdapter.addAll(tweets);
+        maxId = tweets.get(tweets.size() - 1).getuId();
     }
 }
