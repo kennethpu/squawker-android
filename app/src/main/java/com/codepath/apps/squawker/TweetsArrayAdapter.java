@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.codepath.apps.squawker.models.Tweet;
+import com.codepath.apps.squawker.Models.Tweet;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;

@@ -1,4 +1,4 @@
-package com.codepath.apps.squawker.models;
+package com.codepath.apps.squawker.Models;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -1,10 +1,12 @@
-package com.codepath.apps.squawker;
+package com.codepath.apps.squawker.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
+import com.codepath.apps.squawker.R;
+import com.codepath.apps.squawker.SquawkerClient;
 import com.codepath.oauth.OAuthLoginActionBarActivity;
 
 public class LoginActivity extends OAuthLoginActionBarActivity<SquawkerClient> {

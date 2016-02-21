@@ -1,8 +1,13 @@
 package com.codepath.apps.squawker;
 
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+
+import com.codepath.apps.squawker.Fragments.TimelineFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by kpu on 2/20/16.
@@ -10,9 +15,11 @@ import android.support.v4.app.Fragment;
 public class TimelineFragmentPagerAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT = 2;
     private String tabTitles[] = new String[] { "HOME", "MENTIONS" };
+    private List<TimelineFragment> fragments;
 
     public TimelineFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
+        fragments = new ArrayList<>();
     }
 
     @Override
@@ -22,7 +29,10 @@ public class TimelineFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return TimelineFragment.newInstance(position + 1);
+        if (fragments.size() <= position) {
+            fragments.add(TimelineFragment.newInstance(position + 1));
+        }
+        return fragments.get(position);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.codepath.apps.squawker;
+package com.codepath.apps.squawker.Fragments;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -9,7 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.codepath.apps.squawker.models.Tweet;
+import com.codepath.apps.squawker.EndlessScrollListener;
+import com.codepath.apps.squawker.Models.Tweet;
+import com.codepath.apps.squawker.R;
+import com.codepath.apps.squawker.SquawkerApplication;
+import com.codepath.apps.squawker.SquawkerClient;
+import com.codepath.apps.squawker.TweetsArrayAdapter;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -69,9 +74,8 @@ public class TimelineFragment extends Fragment {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                maxId = 0;
                 tweetsArrayAdapter.clear();
-                populateTimeline();
+                refreshTimeline();
             }
         });
 
@@ -87,10 +91,14 @@ public class TimelineFragment extends Fragment {
         client = SquawkerApplication.getRestClient();
 
         // Refresh UI
-        maxId = 0;
-        populateTimeline();
+        refreshTimeline();
 
         return view;
+    }
+
+    public void refreshTimeline() {
+        maxId = 0;
+        populateTimeline();
     }
 
     private void populateTimeline() {
