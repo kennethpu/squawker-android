@@ -75,7 +75,7 @@ public class TimelineFragment extends Fragment {
 
         // Create adapter and link it to the list view
         tweets = new ArrayList<Tweet>();
-        tweetsArrayAdapter = new TweetsArrayAdapter(getActivity().getApplicationContext(), tweets, TimelineFragment.this);
+        tweetsArrayAdapter = new TweetsArrayAdapter(getContext(), tweets, TimelineFragment.this);
         lvTweets.setAdapter(tweetsArrayAdapter);
 
         // Set up pull-to-refresh

@@ -53,6 +53,8 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/llUserProfile"
         android:layout_margin="10dp"
+        android:autoLink="all"
+        android:linksClickable="true"
         android:text="@string/placeholder_body"
         android:textColor="@color/bunker"
         android:textSize="16sp" />

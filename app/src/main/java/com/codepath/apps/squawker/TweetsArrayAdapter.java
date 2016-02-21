@@ -51,7 +51,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
         TextView tvTimeStamp;
 
         @Bind(R.id.tvBody)
-        TextView tvBody;
+        LinkifiedTextView tvBody;
 
         @Bind(R.id.ibReply)
         ImageButton ibReply;

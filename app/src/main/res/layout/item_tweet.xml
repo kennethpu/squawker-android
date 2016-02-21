@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:descendantFocusability="blocksDescendants"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:descendantFocusability="blocksDescendants">
 
     <ImageView
         android:id="@+id/ivProfileImage"
@@ -51,7 +51,7 @@
         android:text="@string/placeholder_time_stamp"
         android:textColor="@color/icon_default" />
 
-    <TextView
+    <com.codepath.apps.squawker.LinkifiedTextView
         android:id="@+id/tvBody"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -61,6 +61,8 @@
         android:layout_marginTop="5dp"
         android:layout_toEndOf="@+id/ivProfileImage"
         android:layout_toRightOf="@+id/ivProfileImage"
+        android:autoLink="all"
+        android:linksClickable="true"
         android:text="@string/placeholder_body"
         android:textColor="@color/bunker" />
 
