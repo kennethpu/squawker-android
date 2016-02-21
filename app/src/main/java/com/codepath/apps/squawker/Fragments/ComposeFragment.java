@@ -23,12 +23,14 @@ import com.codepath.apps.squawker.R;
 import com.codepath.apps.squawker.SquawkerApplication;
 import com.codepath.apps.squawker.SquawkerClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.squareup.picasso.Picasso;
 
 import org.apache.http.Header;
 import org.json.JSONObject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 /**
  * Created by kpu on 2/21/16.
@@ -56,8 +58,11 @@ public class ComposeFragment extends DialogFragment{
         // Empty constructor is required for DialogFragment
     }
 
-    public static ComposeFragment newInstance() {
+    public static ComposeFragment newInstance(String profileImageUrl) {
         ComposeFragment frag = new ComposeFragment();
+        Bundle args = new Bundle();
+        args.putString("url", profileImageUrl);
+        frag.setArguments(args);
         return frag;
     }
 
@@ -87,6 +92,11 @@ public class ComposeFragment extends DialogFragment{
                 getDialog().dismiss();
             }
         });
+
+        String imageUrl = getArguments().getString("url", "");
+        ivAuthorImage.setImageResource(0);
+        Picasso.with(getContext()).load(imageUrl).transform(new RoundedCornersTransformation(3, 1)).into(ivAuthorImage);
+
 
         // Listen for text change so we can update remaining characters count
         etBody.addTextChangedListener(new TextWatcher() {

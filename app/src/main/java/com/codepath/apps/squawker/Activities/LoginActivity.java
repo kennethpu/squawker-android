@@ -5,9 +5,15 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
+import com.codepath.apps.squawker.Models.User;
 import com.codepath.apps.squawker.R;
+import com.codepath.apps.squawker.SquawkerApplication;
 import com.codepath.apps.squawker.SquawkerClient;
 import com.codepath.oauth.OAuthLoginActionBarActivity;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.apache.http.Header;
+import org.json.JSONObject;
 
 public class LoginActivity extends OAuthLoginActionBarActivity<SquawkerClient> {
 
@@ -28,8 +34,15 @@ public class LoginActivity extends OAuthLoginActionBarActivity<SquawkerClient> {
 	// i.e Display application "homepage"
 	@Override
 	public void onLoginSuccess() {
-		 Intent i = new Intent(this, MainActivity.class);
-		 startActivity(i);
+		SquawkerApplication.getRestClient().geUserCredentials(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                User currentUser = User.fromJSON(response);
+                i.putExtra("current_user", currentUser);
+                startActivity(i);
+            }
+        });
 	}
 
 	// OAuth authentication flow failed, handle the error
