@@ -67,7 +67,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
         Picasso.with(getContext()).load(tweet.getUser().getProfileImageUrl()).transform(new RoundedCornersTransformation(5, 1)).into(viewHolder.ivProfileImage);
         viewHolder.tvFullName.setText(tweet.getUser().getFullName());
         viewHolder.tvScreenName.setText("@" + tweet.getUser().getScreenName());
-        viewHolder.tvTimeStamp.setText(" · " + getRelativeTimeAgo(tweet.getCreatedAt()));
+        viewHolder.tvTimeStamp.setText(getRelativeTimeAgo(tweet.getCreatedAt()));
         viewHolder.tvBody.setText(tweet.getBody());
 
         return convertView;
