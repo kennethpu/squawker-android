@@ -11,8 +11,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codepath.apps.squawker.Models.Tweet;
-import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,7 +21,7 @@ import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
  * Created by kpu on 2/20/16.
@@ -81,7 +81,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
         Tweet tweet = getItem(position);
 
         viewHolder.ivProfileImage.setImageResource(0);
-        Picasso.with(getContext()).load(tweet.getUser().getProfileImageUrl()).transform(new RoundedCornersTransformation(5, 1)).into(viewHolder.ivProfileImage);
+        Glide.with(getContext()).load(tweet.getUser().getProfileImageUrl()).bitmapTransform(new RoundedCornersTransformation(getContext(), 5, 1)).into(viewHolder.ivProfileImage);
         viewHolder.tvFullName.setText(tweet.getUser().getFullName());
         viewHolder.tvScreenName.setText("@" + tweet.getUser().getScreenName());
         viewHolder.tvTimeStamp.setText(getRelativeTimeAgo(tweet.getCreatedAt()));

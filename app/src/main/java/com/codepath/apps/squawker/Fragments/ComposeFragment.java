@@ -18,20 +18,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.codepath.apps.squawker.Activities.MainActivity;
 import com.codepath.apps.squawker.Models.Tweet;
 import com.codepath.apps.squawker.R;
 import com.codepath.apps.squawker.SquawkerApplication;
 import com.codepath.apps.squawker.SquawkerClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.squareup.picasso.Picasso;
 
 import org.apache.http.Header;
 import org.json.JSONObject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
  * Created by kpu on 2/21/16.
@@ -108,7 +108,8 @@ public class ComposeFragment extends DialogFragment{
 
         String imageUrl = getArguments().getString(ARG_IMAGE_URL, "");
         ivAuthorImage.setImageResource(0);
-        Picasso.with(getContext()).load(imageUrl).transform(new RoundedCornersTransformation(3, 1)).into(ivAuthorImage);
+
+        Glide.with(getContext()).load(imageUrl).bitmapTransform(new RoundedCornersTransformation(getContext(), 5, 1)).into(ivAuthorImage);
 
         String fullName = getArguments().getString(ARG_FULL_NAME, "");
         tvAuthorFullName.setText(fullName);
