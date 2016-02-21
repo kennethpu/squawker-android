@@ -24,6 +24,7 @@ import com.codepath.apps.squawker.Models.Tweet;
 import com.codepath.apps.squawker.R;
 import com.codepath.apps.squawker.SquawkerApplication;
 import com.codepath.apps.squawker.SquawkerClient;
+import com.codepath.apps.squawker.UserStorage;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -37,10 +38,6 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
  * Created by kpu on 2/21/16.
  */
 public class ComposeFragment extends DialogFragment{
-
-    public static final String ARG_IMAGE_URL = "ARG_IMAGE_URL";
-    public static final String ARG_FULL_NAME = "ARG_FULL_NAME";
-    public static final String ARG_SCREEN_NAME = "ARG_SCREEN_NAME";
 
     @Bind(R.id.ivAuthorImage)
     ImageView ivAuthorImage;
@@ -69,13 +66,8 @@ public class ComposeFragment extends DialogFragment{
         // Empty constructor is required for DialogFragment
     }
 
-    public static ComposeFragment newInstance(String imageUrl, String fullName, String screenName) {
+    public static ComposeFragment newInstance() {
         ComposeFragment frag = new ComposeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_IMAGE_URL, imageUrl);
-        args.putString(ARG_FULL_NAME, fullName);
-        args.putString(ARG_SCREEN_NAME, screenName);
-        frag.setArguments(args);
         return frag;
     }
 
@@ -106,15 +98,16 @@ public class ComposeFragment extends DialogFragment{
             }
         });
 
-        String imageUrl = getArguments().getString(ARG_IMAGE_URL, "");
+        UserStorage userStorage = new UserStorage(getActivity().getApplicationContext());
+        String imageUrl = userStorage.getImageUrl();
         ivAuthorImage.setImageResource(0);
 
         Glide.with(getContext()).load(imageUrl).bitmapTransform(new RoundedCornersTransformation(getContext(), 5, 1)).into(ivAuthorImage);
 
-        String fullName = getArguments().getString(ARG_FULL_NAME, "");
+        String fullName = userStorage.getFullName();
         tvAuthorFullName.setText(fullName);
 
-        String screenName = getArguments().getString(ARG_SCREEN_NAME, "");
+        String screenName = userStorage.getScreenName();
         tvAuthorScreenName.setText("@" + screenName);
 
         // Listen for text change so we can update remaining characters count

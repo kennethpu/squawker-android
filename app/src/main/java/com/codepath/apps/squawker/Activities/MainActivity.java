@@ -11,7 +11,6 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.codepath.apps.squawker.Fragments.ComposeFragment;
 import com.codepath.apps.squawker.Fragments.TimelineFragment;
 import com.codepath.apps.squawker.Models.Tweet;
-import com.codepath.apps.squawker.Models.User;
 import com.codepath.apps.squawker.R;
 import com.codepath.apps.squawker.TimelineFragmentPagerAdapter;
 
@@ -28,8 +27,6 @@ public class MainActivity extends AppCompatActivity{
 
     private TimelineFragmentPagerAdapter timelineAdapter;
 
-    private User currentUser;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,8 +39,6 @@ public class MainActivity extends AppCompatActivity{
 
         // Attach the view pager to the tab strip
         tabsStrip.setViewPager(viewPager);
-
-        currentUser = getIntent().getExtras().getParcelable("current_user");
     }
 
     // Inflate the menu; this adds items to the action bar if it is present.
@@ -55,7 +50,7 @@ public class MainActivity extends AppCompatActivity{
 
     public void onComposeAction(MenuItem menuItem) {
         FragmentManager fm = getSupportFragmentManager();
-        ComposeFragment composeTweetDialog = ComposeFragment.newInstance(currentUser.getProfileImageUrl(), currentUser.getFullName(), currentUser.getScreenName());
+        ComposeFragment composeTweetDialog = ComposeFragment.newInstance();
         composeTweetDialog.show(fm, "fragment_compose_tweet");
     }
 

@@ -44,6 +44,28 @@ public class SquawkerClient extends OAuthBaseClient {
         getClient().get(apiUrl, params, handler);
     }
 
+    public void retweetTweet(long userId, long tweetId, AsyncHttpResponseHandler handler) {
+        String extension = String.format("statuses/retweet/%d.json", userId);
+        String apiUrl = getApiUrl(extension);
+        RequestParams params = new RequestParams();
+        params.put("id", tweetId);
+        getClient().post(apiUrl, params, handler);
+    }
+
+    public void favoriteTweet(long tweetId, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("favorites/create.json");
+        RequestParams params = new RequestParams();
+        params.put("id", tweetId);
+        getClient().post(apiUrl, params, handler);
+    }
+
+    public void unFavoriteTweet(long tweetId, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("favorites/destroy.json");
+        RequestParams params = new RequestParams();
+        params.put("id", tweetId);
+        getClient().post(apiUrl, params, handler);
+    }
+
     public void postTweet(String body, AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("statuses/update.json");
         RequestParams params = new RequestParams();
