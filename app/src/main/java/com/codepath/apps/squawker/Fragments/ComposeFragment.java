@@ -38,11 +38,21 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  */
 public class ComposeFragment extends DialogFragment{
 
-    @Bind(R.id.ibClear)
-    ImageButton ibClear;
+    public static final String ARG_IMAGE_URL = "ARG_IMAGE_URL";
+    public static final String ARG_FULL_NAME = "ARG_FULL_NAME";
+    public static final String ARG_SCREEN_NAME = "ARG_SCREEN_NAME";
 
     @Bind(R.id.ivAuthorImage)
     ImageView ivAuthorImage;
+
+    @Bind(R.id.tvAuthorFullName)
+    TextView tvAuthorFullName;
+
+    @Bind(R.id.tvAuthorScreenName)
+    TextView tvAuthorScreenName;
+
+    @Bind(R.id.ibClear)
+    ImageButton ibClear;
 
     @Bind(R.id.etBody)
     EditText etBody;
@@ -59,10 +69,12 @@ public class ComposeFragment extends DialogFragment{
         // Empty constructor is required for DialogFragment
     }
 
-    public static ComposeFragment newInstance(String profileImageUrl) {
+    public static ComposeFragment newInstance(String imageUrl, String fullName, String screenName) {
         ComposeFragment frag = new ComposeFragment();
         Bundle args = new Bundle();
-        args.putString("url", profileImageUrl);
+        args.putString(ARG_IMAGE_URL, imageUrl);
+        args.putString(ARG_FULL_NAME, fullName);
+        args.putString(ARG_SCREEN_NAME, screenName);
         frag.setArguments(args);
         return frag;
     }
@@ -94,10 +106,15 @@ public class ComposeFragment extends DialogFragment{
             }
         });
 
-        String imageUrl = getArguments().getString("url", "");
+        String imageUrl = getArguments().getString(ARG_IMAGE_URL, "");
         ivAuthorImage.setImageResource(0);
         Picasso.with(getContext()).load(imageUrl).transform(new RoundedCornersTransformation(3, 1)).into(ivAuthorImage);
 
+        String fullName = getArguments().getString(ARG_FULL_NAME, "");
+        tvAuthorFullName.setText(fullName);
+
+        String screenName = getArguments().getString(ARG_SCREEN_NAME, "");
+        tvAuthorScreenName.setText("@" + screenName);
 
         // Listen for text change so we can update remaining characters count
         etBody.addTextChangedListener(new TextWatcher() {

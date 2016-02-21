@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity{
 
     public void onComposeAction(MenuItem menuItem) {
         FragmentManager fm = getSupportFragmentManager();
-        ComposeFragment composeTweetDialog = ComposeFragment.newInstance(currentUser.getProfileImageUrl());
+        ComposeFragment composeTweetDialog = ComposeFragment.newInstance(currentUser.getProfileImageUrl(), currentUser.getFullName(), currentUser.getScreenName());
         composeTweetDialog.show(fm, "fragment_compose_tweet");
     }
 
