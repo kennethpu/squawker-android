@@ -47,17 +47,22 @@ public class TimelineActivity extends AppCompatActivity {
             }
         });
 
+        // Create adapter and link it to the list view
         tweetsArrayAdapter = new TweetsArrayAdapter(this, new ArrayList<Tweet>());
         lvTweets.setAdapter(tweetsArrayAdapter);
+
+        // Set up infinite scrolling
         lvTweets.setOnScrollListener(new EndlessScrollListener() {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                populateTimeline();
+//                populateTimeline();
             }
         });
 
+        // Initialize our REST client
         client = SquawkerApplication.getRestClient();
 
+        // Refresh UI
         maxId = 0;
         populateTimeline();
     }
@@ -68,7 +73,7 @@ public class TimelineActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 ArrayList<Tweet> tweets = Tweet.fromJSONArray(response);
                 tweetsArrayAdapter.addAll(tweets);
-                maxId = tweets.get(19).getuId();
+                maxId = tweets.get(tweets.size()-1).getuId();
 
                 swipeContainer.setRefreshing(false);
             }
