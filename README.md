@@ -46,6 +46,9 @@ Time spent: 20 hours in total
 #### Composing Tweets
 ![Composing Tweets](img/squawker_compose.gif)
 
+#### Extra Functionality
+![Extra Functionality](img/squawker_extra.gif)
+
 GIFs created with [LiceCap](http://www.cockos.com/licecap/).
 
 Credits
